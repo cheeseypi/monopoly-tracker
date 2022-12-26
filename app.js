@@ -83,27 +83,34 @@ wsServer.on('connection', socket => {
                 } else if (data.type === messageTypes.addPlayer) {
                     let id = data.player;
                     let newPlayer = data.content;
-                    console.log("Adding player", newPlayer);
-                    if (!state.money[id]) {
-                        state.money[id] = 1500 * (millions ? millionsMultiplyer : 1);
+                    if (newPlayer) {
+                        console.log("Adding player", newPlayer);
+                        if (!state.money[id]) {
+                            state.money[id] = 1500 * (millions ? millionsMultiplyer : 1);
+                            state.lastAction = `${state.players[id]} was added to the game`;
+                        }
+                        else {
+                            state.lastAction = `${state.players[id]} changed name to ${newPlayer}`;
+                        }
+                        state.players[id] = newPlayer;
                     }
-                    state.players[id] = newPlayer;
-                    state.lastAction = `${state.players[id]} was added to the game`;
                 } else if (data.type === messageTypes.sendMoney) {
                     let id = data.player;
                     let update = data.content;
                     let target = update.target;
                     let amount = update.amount;
                     console.log("Sending money", update);
-                    if (id === target) {
-                        state.money[id] += amount;
-                        state.lastAction = `${state.players[id]} gave themself ${moneyFormatter.format(amount)}`;
-                    } else {
-                        state.money[id] -= amount;
-                        state.lastAction = `${state.players[id]} paid ${moneyFormatter.format(amount)}`;
-                        if (target !== "bank") {
-                            state.money[target] += amount;
-                            state.lastAction += ` to ${state.players[target]}`
+                    if (amount > 0) {
+                        if (id === target) {
+                            state.money[id] += amount;
+                            state.lastAction = `${state.players[id]} gave themself ${moneyFormatter.format(amount)}`;
+                        } else {
+                            state.money[id] -= amount;
+                            state.lastAction = `${state.players[id]} paid ${moneyFormatter.format(amount)}`;
+                            if (target !== "bank") {
+                                state.money[target] += amount;
+                                state.lastAction += ` to ${state.players[target]}`
+                            }
                         }
                     }
                 } else if (data.type === messageTypes.setColor) {
