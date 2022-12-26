@@ -87,7 +87,7 @@ wsServer.on('connection', socket => {
                         console.log("Adding player", newPlayer);
                         if (!state.money[id]) {
                             state.money[id] = 1500 * (millions ? millionsMultiplyer : 1);
-                            state.lastAction = `${state.players[id]} was added to the game`;
+                            state.lastAction = `${newPlayer} was added to the game`;
                         }
                         else {
                             state.lastAction = `${state.players[id]} changed name to ${newPlayer}`;
