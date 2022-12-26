@@ -1,0 +1,16 @@
+{
+  "name": "btainfopanel",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "Skye Doto",
+  "license": "MIT",
+  "dependencies": {
+    "async-mutex": "^0.4.0",
+    "express": "^4.17.1",
+    "ws": "^8.2.3"
+  }
+}

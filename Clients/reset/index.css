@@ -1,0 +1,25 @@
+@font-face {
+    font-family: Renogare;
+    src: url("/infopane/res/Renogare-Regular.otf") format("opentype");
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: sans-serif;
+}
+
+button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+}
+
+select {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+}
