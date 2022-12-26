@@ -1,42 +1,71 @@
 @font-face {
-    font-family: Renogare;
-    src: url("/infopane/res/Renogare-Regular.otf") format("opentype");
+  font-family: Renogare;
+  src: url("/infopane/res/Renogare-Regular.otf") format("opentype");
 }
 
 * {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-    font-family: sans-serif;
-    text-align: center;
+  font-family: sans-serif;
+  text-align: center;
 }
 
 button {
-    padding: 12px;
-    border: none;
-    border-radius: 5px;
+  padding: 12px;
+  margin: 2px;
+  border: none;
+  border-radius: 5px;
 }
 
 select {
-    padding: 12px;
-    border: none;
-    border-radius: 5px;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
 }
 
 input {
-    margin: 20px;
+  margin: 20px;
 }
 
 .player {
-    display: inline-block;
-    margin: 5px;
-    border-radius: 5px;
-    width: max-content;
-    padding: 10px;
+  display: inline-block;
+  margin: 5px;
+  border-radius: 5px;
+  width: max-content;
+  padding: 10px;
 }
 
 h1 {
-    display: inline-block;
+  display: inline-block;
+}
+
+button#changeName {
+  padding: 4px 6px 4px 6px;
+}
+
+div.namebox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  margin: 5px 0px 5px 0px;
+}
+h1#playerName {
+  padding: 2px 2px 0px 2px;
+  border-width: 5px;
+  border-radius: 10px;
+  border-style: solid;
+  border-color: #ccc;
+}
+
+div#activityLog {
+  border: 1px solid black;
+  margin-top: 10px;
+  height: 200px;
+  max-width: 300px;
+  display: inline-block;
+  overflow: scroll;
 }

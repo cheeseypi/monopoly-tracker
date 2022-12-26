@@ -9,16 +9,21 @@ const app = express();
 const wsServer = new ws.Server({
     noServer: true
 });
-
-validColors = {
+const moneyFormatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+})
+const validColors = {
     "red": "#FF0000",
     "green": "#00FF00",
-    "blue": "#0000FF",
+    "blue": "#6666FF",
     "yellow": "#FFFF00",
     "purple": "#FF00FF",
     "teal": "#00FFFF",
     "orange": "#FF8000",
-    "white": "#FFFFFF",
+    "white": "#FDFDFD",
 }
 
 const messageTypes = {
@@ -90,14 +95,13 @@ wsServer.on('connection', socket => {
                     let target = update.target;
                     let amount = update.amount;
                     console.log("Sending money", update);
-                    if(id === target){
+                    if (id === target) {
                         state.money[id] += amount;
-                        state.lastAction = `${state.players[id]} gave themself ${amount}`;
-                    }
-                    else {
+                        state.lastAction = `${state.players[id]} gave themself ${moneyFormatter.format(amount)}`;
+                    } else {
                         state.money[id] -= amount;
-                        state.lastAction = `${state.players[id]} paid ${amount}`;
-                        if(target !== "bank"){
+                        state.lastAction = `${state.players[id]} paid ${moneyFormatter.format(amount)}`;
+                        if (target !== "bank") {
                             state.money[target] += amount;
                             state.lastAction += ` to ${state.players[target]}`
                         }
@@ -106,7 +110,7 @@ wsServer.on('connection', socket => {
                     let id = data.player;
                     let color = data.content;
                     console.log("Setting color", color)
-                    if(!Object.values(state.colors).includes(color)){
+                    if (!Object.values(state.colors).includes(color)) {
                         state.colors[id] = color;
                     }
                 }

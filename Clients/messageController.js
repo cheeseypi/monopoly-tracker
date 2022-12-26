@@ -7,13 +7,28 @@ function changeName() {
     localStorage.setItem("name", name);
 }
 
+function changeColor() {
+    let color = document.getElementById('color-select').value;
+    console.log('color');
+    x.send(JSON.stringify({
+        type: 'setColor',
+        player: localStorage.id,
+        content: color
+    }))
+}
+
 if (!localStorage.id) {
     // Do first time setup
     localStorage.setItem("id", uuidv4());
     changeName();
 }
 
-var x = new WebSocket('ws://' + location.host);
+var x;
+try{
+    x = new WebSocket('ws://' + location.host);
+}catch{
+    x = new WebSocket('wss://'+ location.host);
+}
 var state = {};
 x.addEventListener('open', function (event) {
     console.log("Opened Socket");
@@ -31,11 +46,17 @@ x.addEventListener('message', function (event) {
 
 const moneyFormatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'USD'
+    currency: 'USD',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
 })
 
+const playerNameElement = document.getElementById("playerName");
+
 function updateState(newState) {
-    document.getElementById("playerName").innerText = localStorage.name;
+    let playerColor = newState.colors[localStorage.id];
+    playerNameElement.innerText = localStorage.name;
+    playerNameElement.style.borderColor = playerColor || '#ccc';
 
     let content = document.getElementById("content");
     content.innerHTML = "";
@@ -51,8 +72,41 @@ function updateState(newState) {
         let money = document.createElement('h2');
         money.innerText = moneyFormatter.format(moneyVal);
         content.appendChild(money);
+        // Add color picker
+        let selection = document.createElement('select');
+        selection.name = "color";
+        selection.id = "color-select";
+
+        let defaultOption = document.createElement('option');
+        defaultOption.value = "";
+        defaultOption.disabled = true;
+        if (!playerColor) {
+            defaultOption.selected = true;
+        }
+        defaultOption.innerText = "-- Color --";
+        selection.appendChild(defaultOption);
+
+        let usedColors = Object.values(newState.colors);
+        for (let colorName in newState.validColors) {
+            let colorVal = newState.validColors[colorName];
+            let colorOption = document.createElement('option');
+            colorOption.value = colorVal;
+            if (usedColors.includes(colorVal)) {
+                colorOption.disabled = true;
+            }
+            if (playerColor === colorVal) {
+                colorOption.selected = true;
+            }
+            colorOption.innerText = colorName.charAt(0).toUpperCase() + colorName.substring(1);
+            selection.appendChild(colorOption);
+        }
+
+        selection.onchange = changeColor;
+
+        content.appendChild(selection);
+        content.appendChild(document.createElement('br'));
         // Add other player boxes
-        for (let playerid of Object.keys(newState.players)) {
+        for (let playerid in newState.players) {
             if (playerid != localStorage.id) {
                 let playerBox = document.createElement('div');
                 playerBox.className = "player";
@@ -69,12 +123,11 @@ function updateState(newState) {
                 content.appendChild(playerBox);
             }
         }
-        // Add color picker
         // Add get/send money buttons
         content.appendChild(document.createElement('br'));
 
         let goButton = document.createElement('button');
-        goButton.innerText = "Go!";
+        goButton.innerText = "Collect Go!";
         goButton.onclick = () => {
             sendMoney(localStorage.id, 200);
         };
@@ -86,7 +139,7 @@ function updateState(newState) {
         amount.type = 'number';
         amount.id = 'amount';
         amount.placeholder = '$';
-        amount.autofocus = 'autofocus';
+        amount.autofocus = true;
         content.appendChild(amount);
 
         content.appendChild(document.createElement('br'));
@@ -107,7 +160,7 @@ function updateState(newState) {
         for (let playerid of Object.keys(newState.players)) {
             if (playerid != localStorage.id) {
                 let payToPlayer = document.createElement('button');
-                payToPlayer.innerText = "Send to "+newState.players[playerid];
+                payToPlayer.innerText = "Send to " + newState.players[playerid];
                 payToPlayer.onclick = () => {
                     sendMoney(playerid, parseInt(amount.value));
                 };
@@ -115,6 +168,15 @@ function updateState(newState) {
             }
         }
     }
+
+    let log = document.getElementById('activityLog');
+    if(newState.lastAction){
+        let logItem = document.createElement('p');
+        logItem.className = "logItem";
+        logItem.innerText = newState.lastAction;
+        log.prepend(logItem);
+    }
+
     state = newState;
 }
 
