@@ -19,15 +19,20 @@ function changeColor() {
 
 if (!localStorage.id) {
     // Do first time setup
-    localStorage.setItem("id", uuidv4());
+    try {
+        localStorage.setItem("id", uuidv4());
+    }
+    catch{
+        localStorage.setItem("id", self.crypto.randomUUID());
+    }
     changeName();
 }
 
 var x;
-try{
+try {
+    x = new WebSocket('wss://' + location.host);
+} catch {
     x = new WebSocket('ws://' + location.host);
-}catch{
-    x = new WebSocket('wss://'+ location.host);
 }
 var state = {};
 x.addEventListener('open', function (event) {
@@ -170,7 +175,7 @@ function updateState(newState) {
     }
 
     let log = document.getElementById('activityLog');
-    if(newState.lastAction){
+    if (newState.lastAction) {
         let logItem = document.createElement('p');
         logItem.className = "logItem";
         logItem.innerText = newState.lastAction;
