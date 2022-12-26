@@ -71,6 +71,8 @@ function updateState(newState) {
         }
         // Add color picker
         // Add get/send money buttons
+        content.appendChild(document.createElement('br'));
+
         let goButton = document.createElement('button');
         goButton.innerText = "Go!";
         goButton.onclick = () => {
@@ -78,10 +80,16 @@ function updateState(newState) {
         };
         content.appendChild(goButton);
 
+        content.appendChild(document.createElement('br'));
+
         let amount = document.createElement('input');
         amount.type = 'number';
         amount.id = 'amount';
+        amount.placeholder = '$';
+        amount.autofocus = 'autofocus';
         content.appendChild(amount);
+
+        content.appendChild(document.createElement('br'));
 
         let takeMoney = document.createElement('button');
         takeMoney.innerText = "Take";

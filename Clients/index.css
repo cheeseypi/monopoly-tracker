@@ -10,16 +10,33 @@
 
 body {
     font-family: sans-serif;
+    text-align: center;
 }
 
 button {
-    padding: 10px;
+    padding: 12px;
     border: none;
     border-radius: 5px;
 }
 
 select {
-    padding: 10px;
+    padding: 12px;
     border: none;
     border-radius: 5px;
+}
+
+input {
+    margin: 20px;
+}
+
+.player {
+    display: inline-block;
+    margin: 5px;
+    border-radius: 5px;
+    width: max-content;
+    padding: 10px;
+}
+
+h1 {
+    display: inline-block;
 }
